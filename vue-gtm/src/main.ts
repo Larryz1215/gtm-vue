@@ -9,11 +9,13 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(createGtm({
-  id: 'GTM-TFQD5PDG',
-  vueRouter: router,
-  enabled: true,
-  debug: true,
-}))
+app.use(
+  createGtm({
+    id: 'GTM-TFQD5PDG',
+    vueRouter: router,
+    enabled: true,
+    debug: true,
+  }),
+)
 
 app.mount('#app')
