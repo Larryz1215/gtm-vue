@@ -6,10 +6,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
 onMounted(() => {
-  console.log('Test 1 Page Mounted');
-});
+  console.log('Test 1 Page Mounted')
+})
 </script>
 <style lang="css" scoped></style>
