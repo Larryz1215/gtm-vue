@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createGtm, useGtm, type GtmSupport, type VueGtmUseOptions } from '@gtm-support/vue-gtm'
+import elementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 import App from './App.vue'
 import router from './router'
@@ -17,5 +19,6 @@ app.use(
     debug: true,
   }),
 )
+app.use(elementPlus)
 
 app.mount('#app')
