@@ -7,18 +7,9 @@
 </template>
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { useGtm } from '@gtm-support/vue-gtm';
-const gtm = useGtm();
-const logEvent = () => {
-  gtm?.push({
-    event: 'test1_page_view',
-    page: 'test1'
-  });
- console.log('Test 1 Page Mounted');
-};
-onMounted(() => {
-  logEvent();
 
+onMounted(() => {
+  console.log('Test 1 Page Mounted');
 });
 </script>
 <style lang="css" scoped></style>
