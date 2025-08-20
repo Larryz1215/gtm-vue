@@ -24,17 +24,12 @@ const routes = [
   },
 ]
 
-// 如果 404.html 方案不生效，可以取消註解下面這行，並註解掉 createWebHistory 那行
-const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
-  routes: routes,
-})
 
 // 目前使用 History 路由
-// const router = createRouter({
-//   history: createWebHistory(import.meta.env.BASE_URL),
-//   routes: routes,
-// })
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: routes,
+})
 
 router.beforeEach((to, from, next) => {
   // 這裡可以做路由守衛邏輯，例如權限檢查
