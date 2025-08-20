@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        sessionStorage.setItem('path', location.pathname.slice(0, -1) + location.search + location.hash);
+    </script>
+    <meta http-equiv="refresh" content="0; url=/">
+</head>
+<body>
+    <p>頁面重定向中...</p>
+</body>
+</html>

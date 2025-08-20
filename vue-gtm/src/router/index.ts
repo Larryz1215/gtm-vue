@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { useGtm } from '@gtm-support/vue-gtm'
 
 const routes = [
@@ -16,12 +16,25 @@ const routes = [
     name: 'Test1',
     component: () => import('../page/test1.vue'),
   },
+  // Catch-all 路由：處理未匹配的路徑
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    redirect: '/home',
+  },
 ]
 
+// 如果 404.html 方案不生效，可以取消註解下面這行，並註解掉 createWebHistory 那行
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: routes,
 })
+
+// 目前使用 History 路由
+// const router = createRouter({
+//   history: createWebHistory(import.meta.env.BASE_URL),
+//   routes: routes,
+// })
 
 router.beforeEach((to, from, next) => {
   // 這裡可以做路由守衛邏輯，例如權限檢查
