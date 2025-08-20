@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div>
     <h1>Test 1 Page</h1>
     <el-button type="primary" id="goHomeBtn" @click="$router.push('/home')">Go to Home</el-button>
@@ -19,7 +19,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, onUnmounted } from 'vue'
+import { onMounted, reactive } from 'vue'
 import { useGtm } from '@gtm-support/vue-gtm'
 import { ElMessage } from 'element-plus'
 
@@ -109,93 +109,7 @@ const showTrackedMessage = (options: {
 
 onMounted(() => {
   console.log('Test 1 Page Mounted')
-
-  // 監聽 ElMessage 的 DOM 變化
-  setupMessageObserver()
 })
 
-// DOM 監聽器，用於監聽所有 ElMessage 的出現和消失
-const setupMessageObserver = () => {
-  // 監聽 ElMessage 容器的變化
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element
-          // 檢查是否是 ElMessage 元素
-          if (element.classList?.contains('el-message')) {
-            handleMessageAdded(element)
-          }
-          // 也檢查子元素中是否有 ElMessage
-          const messages = element.querySelectorAll?.('.el-message')
-          messages?.forEach(handleMessageAdded)
-        }
-      })
-
-      mutation.removedNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element
-          if (element.classList?.contains('el-message')) {
-            handleMessageRemoved(element)
-          }
-        }
-      })
-    })
-  })
-
-  // 開始觀察 document.body 的變化
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  })
-
-  // 在組件卸載時停止觀察
-  onUnmounted(() => {
-    observer.disconnect()
-  })
-}
-
-// 處理 ElMessage 出現
-const handleMessageAdded = (element: Element) => {
-  const messageText = element.querySelector('.el-message__content')?.textContent || ''
-  const messageType = getMessageType(element)
-
-  console.log('ElMessage appeared:', messageText, messageType)
-
-  gtm?.push({
-    event: 'ui_message_displayed',
-    message: {
-      type: messageType,
-      content: messageText,
-      timestamp: new Date().toISOString()
-    }
-  })
-}
-
-// 處理 ElMessage 消失
-const handleMessageRemoved = (element: Element) => {
-  const messageText = element.querySelector('.el-message__content')?.textContent || ''
-  const messageType = getMessageType(element)
-
-  console.log('ElMessage disappeared:', messageText, messageType)
-
-  gtm?.push({
-    event: 'ui_message_dismissed',
-    message: {
-      type: messageType,
-      content: messageText,
-      timestamp: new Date().toISOString()
-    }
-  })
-}
-
-// 獲取 ElMessage 的類型
-const getMessageType = (element: Element): string => {
-  if (element.classList.contains('el-message--success')) return 'success'
-  if (element.classList.contains('el-message--warning')) return 'warning'
-  if (element.classList.contains('el-message--info')) return 'info'
-  if (element.classList.contains('el-message--error')) return 'error'
-  return 'unknown'
-}
 </script>
 <style lang="css" scoped></style>
