@@ -19,11 +19,15 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, onUnmounted, ref } from 'vue'
 import { useGtm } from '@gtm-support/vue-gtm'
 import { ElMessage } from 'element-plus'
 
 const gtm = useGtm()
+
+// 簡單的時間追蹤
+const pageStartTime = ref<number>(0)
+let timer30s: number | null = null
 
 const form = reactive({
   name: '',
@@ -107,8 +111,94 @@ const showTrackedMessage = (options: {
   return messageInstance
 }
 
+// 開始時間追蹤
+const startTimeTracking = () => {
+  pageStartTime.value = Date.now()
+  console.log('開始追蹤頁面停留時間')
+  
+  // 發送頁面進入事件
+  gtm?.push({
+    event: 'page_enter',
+    page: {
+      name: 'test1',
+      path: '/test1',
+      timestamp: new Date().toISOString()
+    }
+  })
+  
+  // 設定30秒計時器
+  timer30s = window.setTimeout(() => {
+    gtm?.push({
+      event: 'page_stay_long',
+      page: {
+        name: 'test1',
+        path: '/test1',
+        duration_seconds: 30,
+        duration_category: 'long_stay',
+        timestamp: new Date().toISOString()
+      }
+    })
+    console.log('使用者停留超過30秒')
+  }, 30000) // 30秒
+}
+
+// 結束時間追蹤
+const endTimeTracking = () => {
+  if (pageStartTime.value === 0) return
+  
+  const endTime = Date.now()
+  const stayDuration = endTime - pageStartTime.value
+  const staySeconds = Math.round(stayDuration / 1000)
+  
+  // 清除30秒計時器
+  if (timer30s) {
+    clearTimeout(timer30s)
+    timer30s = null
+  }
+  
+  // 判斷停留時間類別
+  let durationCategory = 'normal_stay'
+  if (staySeconds < 5) {
+    durationCategory = 'short_stay'
+    
+    // 發送短停留事件
+    gtm?.push({
+      event: 'page_stay_short',
+      page: {
+        name: 'test1',
+        path: '/test1',
+        duration_seconds: staySeconds,
+        duration_category: 'short_stay',
+        timestamp: new Date().toISOString()
+      }
+    })
+    console.log(`使用者停留不到5秒 (${staySeconds}秒)`)
+  } else if (staySeconds >= 30) {
+    durationCategory = 'long_stay'
+  }
+  
+  // 發送頁面離開事件
+  gtm?.push({
+    event: 'page_exit',
+    page: {
+      name: 'test1',
+      path: '/test1',
+      duration_seconds: staySeconds,
+      duration_category: durationCategory,
+      timestamp: new Date().toISOString()
+    }
+  })
+  
+  console.log(`頁面停留時間: ${staySeconds}秒 (${durationCategory})`)
+}
+
 onMounted(() => {
   console.log('Test 1 Page Mounted')
+  startTimeTracking()
+})
+
+onUnmounted(() => {
+  endTimeTracking()
 })
 
 </script>
