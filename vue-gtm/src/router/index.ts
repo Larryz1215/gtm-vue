@@ -24,7 +24,6 @@ const routes = [
   },
 ]
 
-
 // 目前使用 History 路由
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
